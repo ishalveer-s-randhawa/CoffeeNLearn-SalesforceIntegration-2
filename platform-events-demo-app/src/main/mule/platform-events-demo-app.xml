@@ -8,13 +8,13 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="ffc757ac-5f94-440e-9635-8cbe424904ae" fetchAllApexSoapMetadata="true" fetchAllApexRestMetadata="true">
-		<salesforce:basic-connection username="ishalveer@caeliusconsulting.com" password="AjithThomas2" securityToken="LGGRqFOZ8XlBVMSZ3F8RWvJAU" />
+		<salesforce:basic-connection username="username" password="password" securityToken="security_token" />
 	</salesforce:sfdc-config>
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0e6d21a5-f8df-40ba-aea4-cb3afaa1104d" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="3b3e9b9d-22db-4399-8245-be9e735a7ffe" >
-		<db:my-sql-connection host="localhost" port="3306" user="root" password="admin" database="Salesforce_Leads" />
+		<db:my-sql-connection host="localhost" port="3306" user="youruser" password="your pass" database="Salesforce_Leads" />
 	</db:config>
 	<flow name="platform-events-demo-appFlow1" doc:id="5bbf7173-e309-4b61-90e3-27c6479fc34d" >
 		<salesforce:subscribe-channel-listener streamingChannel="/event/Platform_Event__e" doc:name="Subscribe channel listener" doc:id="252744e7-4a33-46df-9ad9-e005fd925142" config-ref="Salesforce_Config"/>

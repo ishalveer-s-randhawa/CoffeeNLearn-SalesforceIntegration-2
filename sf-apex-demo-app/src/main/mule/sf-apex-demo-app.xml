@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/salesforce-composite http://www.mulesoft.org/schema/mule/salesforce-composite/current/mule-salesforce-composite.xsd">
 	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="7bb8932f-3fae-4c35-b305-f6f04437368f" fetchAllApexRestMetadata="true">
-		<salesforce:basic-connection username="ishalveer@caeliusconsulting.com" password="AjithThomas2" securityToken="LGGRqFOZ8XlBVMSZ3F8RWvJAU" />
+		<salesforce:basic-connection username="user.name@gmail.com" password="password" securityToken="security_token" />
 	</salesforce:sfdc-config>
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="df07e5a4-c972-4261-935f-935bfa1a7acc" >
 		<http:listener-connection host="0.0.0.0" port="8081" />

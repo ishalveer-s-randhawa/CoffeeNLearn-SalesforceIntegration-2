@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/salesforce-composite http://www.mulesoft.org
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
 	<salesforce-composite:composite-config name="Salesforce_Composite_Config" doc:name="Salesforce Composite Config" doc:id="b663de12-f47a-406d-9de1-ed5e029e7d4a" >
-		<salesforce-composite:oauth-user-pass-connection username="ishalveer@caeliusconsulting.com" password="AjithThomas2" consumerKey="3MVG9wt4IL4O5wvJ.dy7EVs_VAwumx1trJicJuoFR7xigbwLg_ESdLGr_9BQP4oAq3NykFamlWbNINSE0FFTT" consumerSecret="D6BFAE9A704C486F2A987E251F739F8E27F9C7D322CBB3C724B5B3C5B1F5C150" securityToken="LGGRqFOZ8XlBVMSZ3F8RWvJAU"/>
+		<salesforce-composite:oauth-user-pass-connection username="user.name@gmail.com" password="password" consumerKey="consumer_key" consumerSecret="consumer_secret" securityToken="security_token"/>
 	</salesforce-composite:composite-config>
 	<flow name="sf-composite-req-pf" doc:id="5ec0a0b0-f2ee-49ef-939f-29c54f880c6b" >
 		<http:listener doc:name="HTTP : 8081 /sf/composite-req" doc:id="b552fd30-e2be-47a4-8506-ae70408a8c8b" config-ref="HTTP_Listener_config" path="/sf/composite-req" />
