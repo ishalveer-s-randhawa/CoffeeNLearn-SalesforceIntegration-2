@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "b6e89c56-fdf3-492c-a305-152cace67596",
+		"name": "Salesforce CoffeeNLearn Part-2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Composite Demos",
+			"item": [
+				{
+					"name": "MiCorp - Composite Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"allOrNone\": true,\r\n    \"compositeRequest\": [\r\n        {\r\n            \"method\": \"POST\",\r\n            \"url\": \"/services/data/v51.0/sobjects/ORder__c\",\r\n            \"referenceId\": \"order_info\",\r\n            \"body\": {\r\n                \"poNumber__c\": \"1\",\r\n                \"signatureRequiredFlag__c\": false,\r\n                \"shipInstructions__c\": \"Don't break it\",\r\n                \"giftWrapFlag__c\": true,\r\n                \"giftWrapMessage__c\": \"You rock!\",\r\n                \"currencyCode__c\": \"USD\",\r\n                \"subTotal__c\": 41.5\r\n            }\r\n        },\r\n        {\r\n            \"method\": \"POST\",\r\n            \"url\": \"/services/data/v51.0/sobjects/Customer__c\",\r\n            \"referenceId\": \"customer_info\",\r\n            \"body\": {\r\n                \"firstName__c\": \"Ishalveer\",\r\n                \"lastName__c\": \"Singh\",\r\n                \"address__c\": \"#12334\",\r\n                \"ORder__C\": \"@{order_info.id}\"\r\n            }\r\n        },\r\n        {\r\n            \"method\": \"POST\",\r\n            \"url\": \"/services/data/v51.0/sobjects/Item__c\",\r\n            \"referenceId\": \"item_info\",\r\n            \"body\": {\r\n                \"category__c\": \"Bourbon\",\r\n                \"id__c\": \"1\",\r\n                \"quantity__c\": \"1\",\r\n                \"size__c\": \"M\",\r\n                \"ORder__C\": \"@{order_info.id}\"\r\n            }\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/sf/composite-req",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"sf",
+								"composite-req"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transaction Demo - CR",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"allOrNone\": true,\r\n    \"compositeRequest\": [\r\n        {\r\n            \"method\": \"POST\",\r\n            \"url\": \"/services/data/v51.0/sobjects/ORder__c\",\r\n            \"referenceId\": \"order_info\",\r\n            \"body\": {\r\n                \"poNumber__c\": \"1\",\r\n                \"signatureRequiredFlag__c\": false,\r\n                \"shipInstructions__c\": \"Don't break it\",\r\n                \"giftWrapFlag__c\": true,\r\n                \"giftWrapMessage__c\": \"You rock!\",\r\n                \"currencyCode__c\": \"USD\",\r\n                \"subTotal__c\": 41.5\r\n            }\r\n        },\r\n        {\r\n            \"method\": \"POST\",\r\n            \"url\": \"/services/data/v51.0/sobjects/Customer__c\",\r\n            \"referenceId\": \"customer_info\",\r\n            \"body\": {\r\n                \"firstName__c\": \"Ishalveer\",\r\n                \"lastName__c\": \"Singh\",\r\n                \"address__c\": \"#12334\",\r\n                \"ORder__C\": \"@{order_info.id}\"\r\n            }\r\n        },\r\n        {\r\n            \"method\": \"POST\",\r\n            \"url\": \"/services/data/v51.0/sobjects/Item__c\",\r\n            \"referenceId\": \"item_info\",\r\n            \"body\": {\r\n                \"category__c\": \"Bourbon\",\r\n                \"invalid_field\":\"xyz\",\r\n                \"id__c\": \"1\",\r\n                \"quantity__c\": \"1\",\r\n                \"size__c\": \"M\",\r\n                \"ORder__C\": \"@{order_info.id}\"\r\n            }\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/sf/composite-req",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"sf",
+								"composite-req"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Composite Batch",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"batchRequests\": [\r\n        {\r\n            \"method\": \"GET\",\r\n            \"url\": \"/services/data/v51.0/sobjects/Item__c/a015i00000nRD9eAAG\"\r\n        },\r\n        {\r\n            \"method\": \"PATCH\",\r\n            \"url\": \"/services/data/v51.0/sobjects/Account/0015i00000gNssEAAS\",\r\n            \"richInput\": {\r\n                \"Name\": \"Ishalveer Randhawa\"\r\n            }\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/sf/composite-batch",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"sf",
+								"composite-batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Composite SObject",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"attributes\": {\r\n                \"type\": \"Account\",\r\n                \"referenceId\": \"account_info\"\r\n            },\r\n            \"name\": \"Jatin Enterprisesz\",\r\n            \"phone\": \"1234567890\",\r\n            \"Contacts\": {\r\n                \"records\": [\r\n                    {\r\n                        \"attributes\": {\r\n                            \"type\": \"Contact\",\r\n                            \"referenceId\": \"contact_info_1\"\r\n                        },\r\n                        \"lastname\": \"Singha\",\r\n                        \"email\": \"sample@salesforce.coam\"\r\n                    },\r\n                    {\r\n                        \"attributes\": {\r\n                            \"type\": \"Contact\",\r\n                            \"referenceId\": \"contact_info_2\"\r\n                        },\r\n                        \"lastname\": \"Evansa\",\r\n                        \"email\": \"sample@saalesforce.com\"\r\n                    }\r\n                ]\r\n            }\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/sf/composite-sObject",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"sf",
+								"composite-sObject"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoke REST Apex",
+			"item": [
+				{
+					"name": "Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Caelius Consulting\",\r\n    \"phone\": \"+91 123456788\",\r\n    \"website\": \"www.caeliusconsulting.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/sf/apex-acc",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"sf",
+								"apex-acc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Account",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/sf/apex",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"sf",
+								"apex"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"queryParams\":{\r\n\t\t\"id\": \"0015i00000gNsuuAAC\"\r\n\t}\r\n}\t",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/sf/apex-remove",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"sf",
+								"apex-remove"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

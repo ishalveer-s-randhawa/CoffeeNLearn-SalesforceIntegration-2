@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce-composite="http://www.mulesoft.org/schema/mule/salesforce-composite" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce-composite http://www.mulesoft.org/schema/mule/salesforce-composite/current/mule-salesforce-composite.xsd">
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="7bb8932f-3fae-4c35-b305-f6f04437368f" fetchAllApexRestMetadata="true">
+		<salesforce:basic-connection username="ishalveer@caeliusconsulting.com" password="AjithThomas2" securityToken="LGGRqFOZ8XlBVMSZ3F8RWvJAU" />
+	</salesforce:sfdc-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="df07e5a4-c972-4261-935f-935bfa1a7acc" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="sf-invoke-apex-pf" doc:id="3c4e52b5-4238-4f9f-b024-cf0ada43d0c1" >
+		<http:listener doc:name="HTTP : 8081 /sf/apex" doc:id="3d937688-b579-4e22-8998-e2772010563b" config-ref="HTTP_Listener_config" path="/sf/apex"/>
+		<logger level="INFO" doc:name="START" doc:id="7d960933-abc0-414f-b9f5-fc3504de83e2" message='#["Start of the flow " ++ flow.name]' />
+		<salesforce:invoke-apex-rest-method doc:name="getAccounts" doc:id="2c796d5c-9a1a-4bb3-a219-ee131c96bc5b" config-ref="Salesforce_Config" className="AlterAccounts" methodName="getAccounts^/Caelius/*^HttpGet^List&lt;Account&gt;^">
+			<salesforce:request ><![CDATA[#[{}]]]></salesforce:request>
+		</salesforce:invoke-apex-rest-method>
+		<ee:transform doc:name="Transform Message" doc:id="30bec441-4365-48e4-8076-b4c3c9d47f36" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="END" doc:id="13022afe-de1e-4c0a-954b-22915c733ded" message='#["End of the flow " ++ flow.name]' />
+	</flow>
+	<flow name="sf-invoke-apex-pf1" doc:id="3eab8cb2-5e50-4b0d-a264-e8f43eb65332" >
+		<http:listener doc:name="HTTP : 8081 /sf/apex-acc" doc:id="104a044a-2b43-421f-b6fe-d92c080ad0ca" config-ref="HTTP_Listener_config" path="/sf/apex-acc" />
+		<logger level="INFO" doc:name="START" doc:id="ba12a484-dfb2-463f-a42d-d3be5048b6dc" message='#["Start of the flow " ++ flow.name]' />
+		<salesforce:invoke-apex-rest-method className="AlterAccounts" methodName="doPost^/Caelius/*^HttpPost^String^name=String, phone=String, website=String" doc:name="doPost" doc:id="f45a0b74-1ab4-4aa4-b5be-7d975f1ddd4b" config-ref="Salesforce_Config" >
+		</salesforce:invoke-apex-rest-method>
+		<ee:transform doc:name="Transform Message" doc:id="ae87d058-fc38-45b0-b06c-01163e7bd1ce" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="END" doc:id="fbb75e53-8faf-4fe7-a45a-1cd5deff5af3" message='#["End of the flow " ++ flow.name]' />
+	</flow>
+	<flow name="sf-invoke-apex-pf2" doc:id="0ca6cdd5-501e-4c4b-8ad5-4b8ffbc09317" >
+		<http:listener doc:name="HTTP : 8081 /sf/apex-remove" doc:id="f06b85a4-b984-4dde-9b21-a87ba49d26f6" config-ref="HTTP_Listener_config" path="/sf/apex-remove" />
+		<logger level="INFO" doc:name="START" doc:id="be19dd8b-f0d5-4f15-9baa-5a087ef1bed5" message='#["Start of the flow " ++ flow.name]' />
+		<salesforce:invoke-apex-rest-method className="AlterAccounts" methodName="doDelete^/Caelius/*^HttpDelete^void^" doc:name="doDelete" doc:id="025df01a-cbe4-4af0-b7e7-4bd7fbaf6e9d" config-ref="Salesforce_Config" >
+		</salesforce:invoke-apex-rest-method>
+		<ee:transform doc:name="Transform Message" doc:id="76ad5c16-b922-4446-bb66-a0a3b21c4b93" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="END" doc:id="904bcb20-8d5c-481b-bdc3-1f5219d4af0a" message='#["End of the flow " ++ flow.name]' />
+	</flow>
+
+</mule>

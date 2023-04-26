@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="ffc757ac-5f94-440e-9635-8cbe424904ae" fetchAllApexSoapMetadata="true" fetchAllApexRestMetadata="true">
+		<salesforce:basic-connection username="ishalveer@caeliusconsulting.com" password="AjithThomas2" securityToken="LGGRqFOZ8XlBVMSZ3F8RWvJAU" />
+	</salesforce:sfdc-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0e6d21a5-f8df-40ba-aea4-cb3afaa1104d" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="3b3e9b9d-22db-4399-8245-be9e735a7ffe" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="admin" database="Salesforce_Leads" />
+	</db:config>
+	<flow name="platform-events-demo-appFlow1" doc:id="5bbf7173-e309-4b61-90e3-27c6479fc34d" >
+		<salesforce:subscribe-channel-listener streamingChannel="/event/Platform_Event__e" doc:name="Subscribe channel listener" doc:id="252744e7-4a33-46df-9ad9-e005fd925142" config-ref="Salesforce_Config"/>
+		<logger level="INFO" doc:name="START" doc:id="5d5235b2-ec9e-4998-aeda-882a369b0fc3" message='#["Start of the flow " ++ flow.name]' />
+		<db:insert doc:name="Leads" doc:id="e90742a2-fa5c-41f9-98cf-a8a44ba45e10" config-ref="Database_Config" autoGenerateKeys="true">
+			<db:sql ><![CDATA[INSERT INTO Leads (name, createdDate, company, state,email)
+VALUES (:name, :createdDate, :company, :state, :email);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+    name: payload.data.payload.Name__c,
+    createdDate:payload.data.payload.CreatedDate,
+    company: payload.data.payload.Company__c,
+    state: payload.data.payload.State__c,
+    email: payload.data.payload.Email__c,
+}]]]></db:input-parameters>
+		</db:insert>
+		<logger level="INFO" doc:name="Logger" doc:id="87f5fd20-7684-48fb-ac1b-14fe28c16dbc" message="#[output application/json --- payload]" />
+		<logger level="INFO" doc:name="END" doc:id="8e11726c-feb4-40be-b30c-112cc11889ce" message='#["End of the flow " ++ flow.name]' />
+	</flow>
+	<!-- <flow name="sf-invoke-apex-pf" doc:id="7694380f-392a-4bc7-a916-20184ca0568a" >
+		<http:listener doc:name="Listener" doc:id="d815a86b-e8bc-4e76-ab6e-23b14628b7ed" config-ref="HTTP_Listener_config" path="/sf/publish-pf" />
+		<logger level="INFO" doc:name="START" doc:id="640d7807-021e-4892-808e-363d9c10bd7d" message='#["Start of the flow " ++ flow.name]' />
+		<ee:transform doc:name="Transform Message1" doc:id="464fc15f-4894-456e-9ba4-ab9aecc4b377">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+-&#45;&#45;
+[{
+	"Name__c": "Ishalveer"
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:publish-platform-event-message doc:name="Publish platform event message" doc:id="9fe9076d-4aa3-472b-8f13-d89f04d7e026" config-ref="Salesforce_Config" platformEventName="Platform_Event__e"/>
+		<ee:transform doc:name="Transform Message" doc:id="b167b8e0-2740-49d6-b5c4-7b4183d5ee4a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+-&#45;&#45;
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload" doc:id="afcf5b4b-a517-4950-b8f0-7e7563ec10bb" message="#[output application/json -&#45;&#45; payload]" />
+		<logger level="INFO" doc:name="END" doc:id="bfd0fe4f-05d6-4802-adc0-8c2774113c5d" message='#["End of the flow " ++ flow.name]' />
+	</flow> -->
+</mule>

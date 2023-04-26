@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce-composite="http://www.mulesoft.org/schema/mule/salesforce-composite" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce-composite http://www.mulesoft.org/schema/mule/salesforce-composite/current/mule-salesforce-composite.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="52f2a386-e250-4050-a51f-69c25a9c0dab" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<salesforce-composite:composite-config name="Salesforce_Composite_Config" doc:name="Salesforce Composite Config" doc:id="b663de12-f47a-406d-9de1-ed5e029e7d4a" >
+		<salesforce-composite:oauth-user-pass-connection username="ishalveer@caeliusconsulting.com" password="AjithThomas2" consumerKey="3MVG9wt4IL4O5wvJ.dy7EVs_VAwumx1trJicJuoFR7xigbwLg_ESdLGr_9BQP4oAq3NykFamlWbNINSE0FFTT" consumerSecret="D6BFAE9A704C486F2A987E251F739F8E27F9C7D322CBB3C724B5B3C5B1F5C150" securityToken="LGGRqFOZ8XlBVMSZ3F8RWvJAU"/>
+	</salesforce-composite:composite-config>
+	<flow name="sf-composite-req-pf" doc:id="5ec0a0b0-f2ee-49ef-939f-29c54f880c6b" >
+		<http:listener doc:name="HTTP : 8081 /sf/composite-req" doc:id="b552fd30-e2be-47a4-8506-ae70408a8c8b" config-ref="HTTP_Listener_config" path="/sf/composite-req" />
+		<logger level="INFO" doc:name="START" doc:id="bba238be-bc45-406e-8613-9da96fcff32f" message='#["Start of the flow " ++ flow.name]' />
+		<salesforce-composite:execute-composite-request doc:name="Execute composite request" doc:id="62956938-45c7-4994-bfa0-a37a42a20338" config-ref="Salesforce_Composite_Config"/>
+		<ee:transform doc:name="Prepare Response" doc:id="69fec8f0-a552-49e4-9b75-55a949763d65" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="END" doc:id="5177bdd7-0c7a-4216-a97b-606f0420240b" message='#["End of the flow " ++ flow.name]' />
+	</flow>
+	<flow name="sf-composite-batch-pf" doc:id="71aedc3b-7d9b-4c1f-8f64-69e434f9ad14" >
+		<http:listener doc:name="HTTP : 8081 /sf/composite-batch" doc:id="42e83032-0e69-4a44-b2cf-8b3f54ebe987" config-ref="HTTP_Listener_config" path="/sf/composite-batch" />
+		<logger level="INFO" doc:name="START" doc:id="3443f7de-bf53-46e6-93de-a24ab733c89c" message='#["Start of the flow " ++ flow.name]' />
+		<salesforce-composite:execute-composite-batch doc:name="Execute composite batch" doc:id="a8866075-f13e-438e-91a2-75ef55ac83ba" config-ref="Salesforce_Composite_Config">
+			<salesforce-composite:sub-requests ><![CDATA[#[payload.batchRequests]]]></salesforce-composite:sub-requests>
+		</salesforce-composite:execute-composite-batch>
+		<ee:transform doc:name="Prepare Response" doc:id="0d45c5c1-cd72-4de8-8c25-611a94f67397" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="END" doc:id="df78458d-8256-4ff9-8467-1d2142d353f8" message='#["End of the flow " ++ flow.name]' />
+	</flow>
+	<flow name="sf-composite-sObject-pf" doc:id="abcf541a-e0bf-4cf2-b594-872f12acae00" >
+		<http:listener doc:name="HTTP : 8081 /sf/composite-sObject" doc:id="6a3627ba-3c7c-4361-a597-595328ee40d1" config-ref="HTTP_Listener_config" path="/sf/composite-sObject" />
+		<logger level="INFO" doc:name="START" doc:id="4f516430-dcb2-409c-908b-c098d4b47783" message='#["Start of the flow " ++ flow.name]' />
+		<ee:transform doc:name="Prepare sObject Tree Payload" doc:id="3c52f271-f675-4f92-aa6d-a6c8fba4f560">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload.records map ((item, index) -> item )]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce-composite:create-sobject-tree doc:name="Create sobject tree" doc:id="7a6e60f3-eea0-4435-88e2-eac2ff1e286e" config-ref="Salesforce_Composite_Config" type="Account"/>
+		<ee:transform doc:name="Prepare Response" doc:id="f2533e9b-b435-4d1b-b7ed-77b5dcd6b03b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="END" doc:id="34b5f847-ecaf-4fb6-b101-3141f6b5d016" message='#["End of the flow " ++ flow.name]' />
+	</flow>
+</mule>
